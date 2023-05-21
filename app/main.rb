@@ -1,3 +1,4 @@
+require 'app/line.rb'
 require 'app/util.rb'
 require 'app/shape.rb'
 require 'app/bullet.rb'
