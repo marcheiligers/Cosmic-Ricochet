@@ -1,10 +1,12 @@
 class Line
-  def initialize(x0, y0, x1, y1, w)
+  attr_accessor :x0, :y0, :x1, :y1, :thickness
+
+  def initialize(x0, y0, x1, y1, thickness)
     @x0 = x0
     @y0 = y0
     @x1 = x1
     @y1 = y1
-    @w = w
+    @thickness = thickness
   end
 
   def length
@@ -17,14 +19,32 @@ class Line
 
   def draw(args)
     {
-      x: @x0 + @w / 2,
-      y: @y0 + @w / 2,
-      w: length - @w / 2,
-      h: @w,
+      x: @x0 + @thickness / 2,
+      y: @y0 - @thickness / 2,
+      w: length + @thickness / 2,
+      h: @thickness,
       angle: angle,
       angle_anchor_x: 0,
-      angle_anchor_y: @w / 2,
+      angle_anchor_y: 0.5,
       path: :pixel
     }.sprite!(WHITE)
+  end
+
+  def serialize
+    {
+      x0: @x0,
+      y0: @y0,
+      x1: @x1,
+      y1: @y1,
+      thickness: @thickness,
+    }
+  end
+
+  def inspect
+    serialize.to_s
+  end
+
+  def to_s
+    serialize.to_s
   end
 end

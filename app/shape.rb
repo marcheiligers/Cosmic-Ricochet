@@ -2,39 +2,36 @@ class Shape
   attr_sprite
   attr_accessor :vx, :vy
 
-  @@id = 0
+  WIDTH = 3
+
   @@render_targets = {}
 
-  def initialize(args, x, y, *pts, w: 0, h: 0, angle: 0, path: nil)
+  def self.prepare(args, *pts, path:, w: 0, h: 0)
+    pts.each do |pt|
+      w = pt[0] if pt[0] > w
+      h = pt[1] if pt[1] > h
+    end
+    w += WIDTH
+    h += WIDTH
+
+    lines = pts.each_cons(2).map
+
+    rt = args.render_target(path)
+    rt.w = w
+    rt.h = h
+    rt.primitives << lines.map do |line|
+      draw_line(args, line[0], line[1], 3)
+    end
+
+    @@render_targets[path] = { w: w, h: h, pts: pts, lines: lines }
+  end
+
+  def initialize(args, x, y, path, angle: 0)
     @x = x
     @y = y
-    @lines = pts.each_cons(2).map
-
-    @w = w
-    @h = h
-    pts.each do |pt|
-      @w = pt[0] if pt[0] > @w
-      @h = pt[1] if pt[1] > @h
-    end
-    @w += 1
-    @h += 1
-
-    @path = path || "shape:#{@@id += 1}".to_sym
-    if @@render_targets[@path].nil?
-      rt = args.render_target(@path)
-      rt.w = @w
-      rt.h = @h
-      rt.primitives << @lines.map do |line|
-        draw_line(args, line[0], line[1], 2)
-      end
-      @@render_targets[@path] = rt
-    end
-
-    @sprite = {
-      w: @w,
-      h: @h,
-      path: @path
-    }.merge(WHITE)
+    @w = @@render_targets[path][:w]
+    @h = @@render_targets[path][:h]
+    @path = path
 
     @angle = angle
 
@@ -76,17 +73,5 @@ class Shape
     @y = 720 - @h if @y > 720 - @h
 
     @angle = @angle % 360
-  end
-
-  def draw
-    @sprite.sprite!({
-      x: @x,
-      y: @y,
-      angle: @angle
-    })
-  end
-
-  def offset(pt)
-    [pt[0] + @x, pt[1] + @y]
   end
 end

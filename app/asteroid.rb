@@ -5,10 +5,17 @@ class Asteroid < Shape
     [[0, 3], [4, 0], [10, 1], [14, 0], [13, 7], [14, 9], [11, 10], [7, 14], [0, 11], [2, 6], [0, 3]],
   ]
 
+  def self.prepare(args)
+    SHAPES.each_with_index do |pts, size|
+      Shape.prepare(args, *pts, path: "asteroid:#{size}")
+    end
+  end
+
   def initialize(args, x, y, vx, vy, size)
     @max_speed = 10
 
-    super(args, x, y, *SHAPES[size], path: "asteroid:#{size}")
+    super(args, x, y, "asteroid:#{size}")
+
     @vx = vx
     @vy = vy
     @vr = rand(5) - 3
