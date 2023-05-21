@@ -1,0 +1,7 @@
+require 'app/util.rb'
+require 'app/shape.rb'
+require 'app/bullet.rb'
+require 'app/ship.rb'
+require 'app/asteroid.rb'
+require 'app/letters.rb'
+require 'app/tick.rb'
